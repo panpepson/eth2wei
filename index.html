@@ -60,6 +60,13 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .result-item:hover {
+            background-color: #e9ecef;
         }
 
         .result-item:last-child {
@@ -70,17 +77,34 @@
             font-family: monospace;
             color: #2563eb;
         }
-	.autor {
+
+        .autor {
+            margin-top: 10%;
             font-size: 1rem;
-            text-align: right;
-	    text-decoration: none;
-	}
+            text-align: right;                  
+        }
+        
+        .autor a {
+            text-decoration: none;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2 class="title">Konwerter</h2>
-    <div class="input-group">
+        <div class="input-group">
             <label for="ethInput">Wprowadź ilość ETH:</label>
             <input 
                 type="number" 
@@ -93,33 +117,59 @@
 
         <div class="results">
             <h3>Konwersja:</h3>
-            <div class="result-item">
+            <div class="result-item" onclick="copyValue('gwei')">
                 <span>Gwei:</span>
                 <span id="gweiResult" class="result-value">0</span>
             </div>
-            <div class="result-item">
+            <div class="result-item" onclick="copyValue('wei')">
                 <span>Wei:</span>
                 <span id="weiResult" class="result-value">0</span>
             </div>
         </div>
+        <div class="autor"><a href="https://trochymiak.net" target="_blank">^p^</a></div>
     </div>
-		<span class="autor"><a href="https://trochymiak.net" target="_blank">^p^</a></span>
+
+    <div class="tooltip" id="tooltip">Skopiowano!</div>
+
     <script>
         const ethInput = document.getElementById('ethInput');
         const gweiResult = document.getElementById('gweiResult');
         const weiResult = document.getElementById('weiResult');
+        const tooltip = document.getElementById('tooltip');
+
+        // Przechowujemy surowe wartości
+        let currentGwei = "0";
+        let currentWei = "0";
+
         function formatNumber(num) {
             return num.toLocaleString('pl-PL');
         }
 
         function convertEth() {
             const ethValue = parseFloat(ethInput.value) || 0;
-            // 1 ETH = 10^9 Gwei = 10^18 Wei
-            const gwei = ethValue * 1000000000;
-            const wei = ethValue * 1000000000000000000;
+            
+            // Zapisujemy surowe wartości
+            currentGwei = (ethValue * 1000000000).toFixed(0);
+            currentWei = (ethValue * 1000000000000000000).toFixed(0);
 
-            gweiResult.textContent = formatNumber(gwei);
-            weiResult.textContent = formatNumber(wei);
+            // Wyświetlamy sformatowane wartości
+            gweiResult.textContent = formatNumber(parseFloat(currentGwei));
+            weiResult.textContent = formatNumber(parseFloat(currentWei));
+        }
+
+        function copyValue(type) {
+            // Kopiujemy surową wartość zamiast sformatowanej
+            const valueToCopy = type === 'gwei' ? currentGwei : currentWei;
+            
+            navigator.clipboard.writeText(valueToCopy).then(() => {
+                tooltip.style.opacity = '1';
+                tooltip.style.left = (event.pageX + 10) + 'px';
+                tooltip.style.top = (event.pageY + 10) + 'px';
+                
+                setTimeout(() => {
+                    tooltip.style.opacity = '0';
+                }, 1500);
+            });
         }
 
         ethInput.addEventListener('input', convertEth);
