@@ -73,16 +73,14 @@
 	.autor {
             font-size: 1rem;
             text-align: right;
-            font-family: monospace;
+	    text-decoration: none;
 	}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Konwerter<br/>
-	    eth do gwei i wei</h1>
-        
-        <div class="input-group">
+        <h2 class="title">Konwerter</h2>
+    <div class="input-group">
             <label for="ethInput">Wprowadź ilość ETH:</label>
             <input 
                 type="number" 
@@ -104,8 +102,8 @@
                 <span id="weiResult" class="result-value">0</span>
             </div>
         </div>
-		<span class="autor"><a href="https://trochymiak.net" target="_blank">^p^</a></span>
     </div>
+		<span class="autor"><a href="https://trochymiak.net" target="_blank">^p^</a></span>
     <script>
         const ethInput = document.getElementById('ethInput');
         const gweiResult = document.getElementById('gweiResult');
